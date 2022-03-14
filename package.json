@@ -1,0 +1,33 @@
+{
+  "name": "ui",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@codemirror/gutter": "^0.19.9",
+    "@codemirror/lang-markdown": "^0.19.6",
+    "@codemirror/state": "^0.19.9",
+    "@codemirror/view": "^0.19.47",
+    "@types/mithril": "^2.0.9",
+    "autoprefixer": "^10.4.2",
+    "postcss": "^8.4.7",
+    "tailwindcss": "^3.0.23",
+    "typescript": "^4.5.4",
+    "vite": "^2.8.0"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.179",
+    "@walletconnect/web3-provider": "^1.7.3",
+    "ethers": "^5.5.4",
+    "hyperdapp": "^0.6.0",
+    "lodash": "^4.17.21",
+    "mithril": "^2.0.4",
+    "mithril-cc": "^0.9.9",
+    "vite-plugin-plain-text": "^1.1.4",
+    "web3": "^1.7.0"
+  }
+}
