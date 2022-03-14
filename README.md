@@ -9,6 +9,10 @@ Goals:
 ## Development
 
 ```
+$ cp .env.example .env
+
+# Fill out the fields in .env
+
 $ npm install
 $ npm run dev
 ```
