@@ -101,9 +101,9 @@ function makeWalletConnect({ updateStatus }: AdapterParams): Adapter {
       await provider.enable()
     },
     disconnect() {
-      wallet.provider.off('accountsChanged')
-      wallet.provider.off('chainChanged')
-      wallet.provider.off('disconnect')
+      // wallet.provider.off('accountsChanged')
+      // wallet.provider.off('chainChanged')
+      // wallet.provider.off('disconnect')
     }
   }
 
@@ -168,7 +168,7 @@ async function makeMetamask({ updateStatus }: AdapterParams) {
       updateStatus({ type: 'ready', provider, signer: await provider.getSigner(), address: (await provider.listAccounts())[0] })
     },
     disconnect() {
-      window.ethereum.off()
+      // window.ethereum.off()
       subs.forEach(s => s.unsubscribe())
     }
   }
