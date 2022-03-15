@@ -15,7 +15,13 @@ type PromptType =
   | 'input'
   | 'button'
 
-type Prompt = [PromptType, ...(string | Prompt)[]]
+type Prompt = [PromptType, ...PromptArg[]]
+type PromptArg = string | Prompt | object
+
+type ButtonAttrs = {
+  enabled?: boolean
+}
+
 
 type Attrs = {
   flow: Flow | null
@@ -64,11 +70,12 @@ export const FlowUI = cc<Attrs>(function($attrs) {
 
     return (
       <div class={`${className} p-4 bg-gray-100 dark:bg-gray-700 divide-y`}>
-        {promptSnapshots.map(prompts =>
+        {promptSnapshots.map((prompts, i) =>
           <div class="py-2 space-y-4 flex flex-col items-center dark:border-gray-600">
             {renderPrompts({
               flow,
               prompts,
+              isLatest: i === promptSnapshots.length - 1,
               className: '',
               async executeButtonAction(action) {
                 console.log("ACTION", action)
@@ -87,7 +94,8 @@ export const FlowUI = cc<Attrs>(function($attrs) {
 
 function renderPrompts(params: {
   flow: Flow
-  prompts: (string | Prompt)[]
+  prompts: PromptArg[]
+  isLatest: boolean
   className: string
   executeButtonAction(action: any[]): void
 }) {
@@ -122,12 +130,13 @@ function renderPrompts(params: {
       </div>
     }
     else if (type === 'button') {
-      const [buttonText, callback] = args
+      const [buttonText, attrs, callback] = args as [string, ButtonAttrs, Prompt[]]
 
       return (
         <button
           class={`${btnClass} ${className}`}
           onclick={() => params.executeButtonAction(callback as any)}
+          disabled={!params.isLatest || attrs.enabled === false}
         >
           {unescapeString(buttonText)}
         </button>
@@ -154,4 +163,8 @@ function renderPrompts(params: {
   })
 }
 
-const btnClass = `inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`
+const btnClass = `
+  inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white
+  bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 disabled:hover:bg-gray-600
+  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+`
