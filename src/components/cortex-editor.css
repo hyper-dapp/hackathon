@@ -1,0 +1,9 @@
+.publish-button {
+  margin: 10px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: 100px;
+  height: 23px;
+}
