@@ -72,7 +72,7 @@ class IPFSStorageManager {
         };
 
         if (file) data.image = new File([ file ], `${name}.png`, { type: 'image/png' });
-        const cid = await client.store(data);
+        const cid = await this.client.store(data);
 
         return resolve(cid);
       } catch (e) {
