@@ -1,13 +1,9 @@
 import m from 'mithril'
 import {cc} from 'mithril-cc'
-import { makeCodeEditor } from '../lib/code-editor'
 import IPFSStorageManager from '../lib/IPFS'
 
-import { plainText as GUESTBOOK_EXAMPLE } from '../../example-flows/guestbook.pl'
-
 type Attrs = {
-  className?: string,
-  onDimiss(): void
+  onDismiss(): void
 }
 
 export const UploadModal = cc<Attrs>(function($attrs) {
@@ -17,7 +13,7 @@ export const UploadModal = cc<Attrs>(function($attrs) {
 
   const executePublish = async () => {
     console.log(import.meta.env);
-    const ipfs = new IPFSStorageManager(import.meta.env.VITE_NFT_STORAGE_API_KEY);
+    const ipfs = new IPFSStorageManager(import.meta.env.VITE_NFT_STORAGE_API_KEY as string);
     const pl = editor.getText();
 
     const attributes = [
@@ -132,7 +128,7 @@ export const UploadModal = cc<Attrs>(function($attrs) {
     );
   }
 
-  return ({ className }) => {
+  return () => {
     return (
       <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

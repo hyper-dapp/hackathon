@@ -5,8 +5,16 @@ import {
   Blob
 } from 'nft.storage'
 
+type Attribute = {
+  trait_type: string
+  value: any
+}
+
 class IPFSStorageManager {
-  constructor(apiKey) {
+  http: any
+  client: any
+
+  constructor(apiKey: string) {
     if (apiKey) {
       this.client = new NFTStorage({ token: apiKey });
       this.http = new Http();
@@ -14,34 +22,48 @@ class IPFSStorageManager {
     } else throw new Error('NFTStorage apiKey must be provided');
   }
 
-  upload(file) {
+  upload(file: string) {
     return this.client.storeDirectory([file]);
   }
 
-  storeDataBlob(metadata) {
+  storeDataBlob(metadata: BlobPart) {
     const content = new Blob([metadata]);
     return this.client.storeBlob(content);
   }
 
-  delete(cid) {
+  delete(cid: string) {
     return this.client.delete(cid);
   }
 
-  createNFTMetaDataTemplate(logic, description, external_url, name, attributes = [], image = "") {
+  createNFTMetaDataTemplate(
+    logic: string,
+    description: string,
+    external_url: string,
+    name: string,
+    attributes: Attribute[] = [],
+    image = ""
+  ) {
     return JSON.stringify({
       description,
       external_url,
       name,
       logic,
       attributes,
-      image
+      image,
     });
   }
 
-  uploadAndGenerateMetaData(logic, name, description, attributes = [], external_url, file) {
+  uploadAndGenerateMetaData(
+    logic: string,
+    name: string,
+    description: string,
+    attributes: Attribute[] = [],
+    external_url: string,
+    file: string,
+  ) {
     return new Promise(async (resolve, reject) => {
       try {
-        const data = {
+        const data: any = {
           description,
           external_url,
           name,
@@ -59,7 +81,7 @@ class IPFSStorageManager {
     });
   }
 
-  deleteMetaData(cid, cb) {
+  deleteMetaData(cid: string, cb: (progress: number) => void): Promise<void> {
     return new Promise(async (resolve, reject) => {
       try {
         const { image } = await this.http.get(cid);

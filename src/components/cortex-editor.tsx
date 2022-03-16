@@ -26,25 +26,17 @@ export const CortexEditor = cc<Attrs>(function($attrs) {
     $attrs().onUpdate(editor.getText())
   })
 
-  const executePublish = () => {
-    showIpfs = true;
-  }
-
-  const showModal = () => {
-    return showIpfs ? m(
-      UploadModal,{
-        className: null,
-        async onDismiss() {
-          showIpfs = false;
-        },
-      }) : null;
-  }
-
   return ({ className }) => {
     return (
       <div class={`${className} flex`}>
-        { showModal() }
-        <button onclick={executePublish} class={`publish-button ${btnClass}`}>Publish</button>
+        {showIpfs &&
+          m(UploadModal, {
+            onDismiss() {
+              showIpfs = false;
+            },
+          })
+        }
+        <button onclick={() => showIpfs = true} class={`publish-button ${btnClass}`}>Publish</button>
         <div class="flex-1 flex flex-col code-editor-container"></div>
       </div>
     );
