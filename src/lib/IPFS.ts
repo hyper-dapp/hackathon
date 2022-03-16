@@ -5,7 +5,7 @@ import {
   Blob
 } from 'nft.storage'
 
-type Attribute = {
+export type Attribute = {
   trait_type: string
   value: any
 }

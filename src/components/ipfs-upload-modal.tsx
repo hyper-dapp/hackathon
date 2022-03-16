@@ -1,6 +1,6 @@
 import m from 'mithril'
 import {cc} from 'mithril-cc'
-import IPFSStorageManager from '../lib/IPFS'
+import IPFSStorageManager, { Attribute } from '../lib/IPFS'
 
 type Attrs = {
   cortexCode: string
@@ -16,7 +16,7 @@ export const UploadModal = cc<Attrs>(function($attrs) {
     const ipfs = new IPFSStorageManager(import.meta.env.VITE_NFT_STORAGE_API_KEY as string);
     const pl = $attrs().cortexCode
 
-    const attributes = [
+    const attributes: Attribute[] = [
       {
         "trait_type": "version",
         "value": 1.0
@@ -40,11 +40,13 @@ export const UploadModal = cc<Attrs>(function($attrs) {
       } = config;
 
       if (name && description) {
-        cid = await ipfs.uploadAndGenerateMetaData(pl, name, description, attributes, external_url, image_url);
+        const metaData = ipfs.createNFTMetaDataTemplate(pl, description, external_url, name, attributes, image_url);
+        cid = await ipfs.storeDataBlob(metaData);
+
+        console.log(cid);
       } else {
         console.error('Name and Description are required');
       }
-
 
       return;
     } catch (e) {
