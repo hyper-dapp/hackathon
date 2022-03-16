@@ -2,8 +2,9 @@ import { EditorView } from "@codemirror/view"
 import { EditorState } from "@codemirror/state"
 import { lineNumbers } from "@codemirror/gutter"
 
+export type Editor = ReturnType<typeof makeCodeEditor>
 
-export function makeCodeEditor(elem) {
+export function makeCodeEditor(elem: HTMLElement) {
   const view = new EditorView({
     parent: elem,
     state: EditorState.create({

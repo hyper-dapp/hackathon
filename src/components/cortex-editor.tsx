@@ -1,6 +1,6 @@
 import m from 'mithril'
 import {cc} from 'mithril-cc'
-import { makeCodeEditor } from '../lib/code-editor'
+import { Editor, makeCodeEditor } from '../lib/code-editor'
 import { UploadModal } from './ipfs-upload-modal'
 import './cortex-editor.css';
 
@@ -17,11 +17,11 @@ const btnClass = `
   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
 `
 export const CortexEditor = cc<Attrs>(function($attrs) {
-  let editor: any
+  let editor: Editor
   let showIpfs: boolean = false;
 
   this.oncreate(({ dom }) => {
-    editor = makeCodeEditor(dom.querySelector('.code-editor-container'))
+    editor = makeCodeEditor(dom.querySelector('.code-editor-container')!)
     editor.setText(GUESTBOOK_EXAMPLE)
     $attrs().onUpdate(editor.getText())
   })
@@ -31,6 +31,7 @@ export const CortexEditor = cc<Attrs>(function($attrs) {
       <div class={`${className} flex`}>
         {showIpfs &&
           m(UploadModal, {
+            cortexCode: editor.getText(),
             onDismiss() {
               showIpfs = false;
             },

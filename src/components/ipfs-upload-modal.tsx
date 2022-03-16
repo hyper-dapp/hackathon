@@ -3,18 +3,18 @@ import {cc} from 'mithril-cc'
 import IPFSStorageManager from '../lib/IPFS'
 
 type Attrs = {
+  cortexCode: string
   onDismiss(): void
 }
 
 export const UploadModal = cc<Attrs>(function($attrs) {
-  let editor: any
   let cid: any
   let config = {};
 
   const executePublish = async () => {
     console.log(import.meta.env);
     const ipfs = new IPFSStorageManager(import.meta.env.VITE_NFT_STORAGE_API_KEY as string);
-    const pl = editor.getText();
+    const pl = $attrs().cortexCode
 
     const attributes = [
       {
