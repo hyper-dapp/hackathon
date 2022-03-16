@@ -19,7 +19,7 @@ export const UploadModal = cc<Attrs>(function($attrs) {
     const attributes: Attribute[] = [
       {
         "trait_type": "version",
-        "value": 1.0
+        "value": '1.0.0'
       },
       {
         "trait_type": "platform",
