@@ -16,7 +16,7 @@ choose_prompt :-
   my_guestbook(Id),
   show [
     button('Open My Guestbook', [
-      set(viewingGuestbookId, Id),
+      set(guestbookId, Id),
       set(tab, view)
     ])
   ].
