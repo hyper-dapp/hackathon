@@ -1,5 +1,6 @@
 import m from 'mithril'
 import {ccs} from 'mithril-cc'
+import { btnClass } from '../lib/component-classes'
 import { WalletConnector } from '../lib/wallet-connector'
 
 type Attrs = {
@@ -14,11 +15,11 @@ export const WalletButton = ccs<Attrs>(({ wallet }) => {
       }
       {state.type === 'init' &&
         <div class="p-4">
-          <button onclick={() => wallet.connectViaWalletConnect()}>
-            Wallet Connect
+          <button class={`m-2 ${btnClass({ size: 'lg' })}`} onclick={() => wallet.connectViaWalletConnect()}>
+            Connect with Wallet Connect
           </button>
-          <button onclick={() => wallet.connectViaMetamask()}>
-            Metamask
+          <button class={`m-2 ${btnClass({ size: 'lg' })}`} onclick={() => wallet.connectViaMetamask()}>
+            Connect with Metamask
           </button>
         </div>
       }

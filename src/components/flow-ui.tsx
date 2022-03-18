@@ -6,6 +6,7 @@ import { unescapeString } from 'hyperdapp'
 import { Flow } from '../lib/flow'
 import { WalletConnector } from '../lib/wallet-connector'
 import { WalletButton } from './wallet-button'
+import { btnClass } from '../lib/component-classes'
 
 type PromptType =
   | 'col'
@@ -134,7 +135,7 @@ function renderPrompts(params: {
 
       return (
         <button
-          class={`${btnClass} ${className}`}
+          class={`${btnClass()} ${className}`}
           onclick={() => params.executeButtonAction(callback as any)}
           disabled={!params.isLatest || attrs.enabled === false}
         >
@@ -162,9 +163,3 @@ function renderPrompts(params: {
     }
   })
 }
-
-const btnClass = `
-  inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white
-  bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 disabled:hover:bg-gray-600
-  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
-`

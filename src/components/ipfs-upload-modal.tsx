@@ -1,6 +1,7 @@
 import m from 'mithril'
 import {cc} from 'mithril-cc'
 import { CIDString } from 'nft.storage'
+import { btnClass } from '../lib/component-classes'
 import IPFSStorageManager, { Attribute } from '../lib/IPFS'
 
 type Attrs = {
@@ -106,7 +107,7 @@ export const UploadModal = cc<Attrs>(function($attrs) {
         </div>
 
         <div class="mt-5 sm:mt-6">
-          <button type="button" onclick={executePublish} class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">Upload</button>
+          <button type="button" onclick={executePublish} class={btnClass()}>Upload</button>
         </div>
       </div>
     );
