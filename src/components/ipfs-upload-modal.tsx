@@ -1,5 +1,6 @@
 import m from 'mithril'
 import {cc} from 'mithril-cc'
+import { CIDString } from 'nft.storage'
 import IPFSStorageManager, { Attribute } from '../lib/IPFS'
 
 type Attrs = {
@@ -8,8 +9,13 @@ type Attrs = {
 }
 
 export const UploadModal = cc<Attrs>(function($attrs) {
-  let cid: any
-  let config = {};
+  let cid: CIDString
+  let config = {
+    name: '',
+    image_url: '',
+    description: '',
+    external_url: '',
+  };
 
   const executePublish = async () => {
     console.log(import.meta.env);
@@ -106,7 +112,7 @@ export const UploadModal = cc<Attrs>(function($attrs) {
     );
   }
 
-  const submissionSuccess = (cid) => {
+  const submissionSuccess = (cid: CIDString) => {
     return (
       <div>
         <div>

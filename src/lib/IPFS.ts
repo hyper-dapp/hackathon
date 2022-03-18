@@ -12,7 +12,7 @@ export type Attribute = {
 
 class IPFSStorageManager {
   http: any
-  client: any
+  client: NFTStorage
 
   constructor(apiKey: string) {
     if (apiKey) {
