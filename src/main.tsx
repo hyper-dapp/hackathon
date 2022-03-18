@@ -14,7 +14,6 @@ const App = cc(function() {
 
   return () => {
     const state = wallet.state
-    console.log('state', state)
 
     return <div class="flex-1 flex">
       {m(CortexEditor, {
