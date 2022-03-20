@@ -47,13 +47,8 @@ export async function makeFlow(code: string) {
       const result = await contract
         .connect(env.signer)
         .functions[functionSig](...args, { value: value })
-        .then(
-          (yes) =>
-            console.log("yes", yes) || yes.map(convertEthersContractCallResult),
-          (no) => {
-            console.log("no", no);
-            throw no;
-          }
+        .then((result) =>
+          result.map(convertEthersContractCallResult)
         );
 
       console.log("Result", result);

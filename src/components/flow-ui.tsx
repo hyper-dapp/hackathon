@@ -1,5 +1,4 @@
 import m from "mithril";
-import debounce from "lodash/debounce";
 import { cc, uniques } from "mithril-cc";
 import { unescapeString } from "hyperdapp";
 
@@ -85,7 +84,7 @@ function renderPrompts(params: {
   className: string;
   executeButtonAction(action: any[]): void;
   onInputChange(): void;
-}) {
+}): m.Child[] {
   const filtered = params.prompts.filter((p): p is Prompt => {
     const keep = typeof p !== "string";
     if (!keep) {
@@ -118,7 +117,7 @@ function renderPrompts(params: {
       let logType: LogType;
 
       if (["notice", "error", "success", "warning"].includes(logTypeInput)) {
-        logType = logTypeInput;
+        logType = logTypeInput as LogType;
       } else {
         console.warn(`[prompt/log/unrecognized-type]`, logTypeInput, logTerm);
         logType = "notice";

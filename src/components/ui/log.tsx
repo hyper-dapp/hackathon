@@ -1,6 +1,6 @@
 import m from "mithril";
 
-type LogType = "error" | "notice" | "success" | "warning";
+export type LogType = "error" | "notice" | "success" | "warning";
 
 export function renderLog(type: LogType, content: any) {
   const [bgColor, borderColor, textColor, iconColor] =

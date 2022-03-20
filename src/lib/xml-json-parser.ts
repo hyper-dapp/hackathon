@@ -1,7 +1,7 @@
-const XMLParser = (node) => {
-  let data = {};
+const XMLParser = (node: any) => {
+  let data: Record<any, any> = {};
 
-  const add = (name, value) => {
+  const add = (name: string, value: any) => {
     if (data[name]) {
       if (data[name].constructor !== Array) data[name] = [data[name]];
       data[name][data[name].length] = value;

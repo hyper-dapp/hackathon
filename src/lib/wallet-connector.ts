@@ -166,6 +166,7 @@ async function makeMetamask({ updateStatus }: AdapterParams) {
         "networkChanged",
         function (networkId: number) {
           // Time to reload your interface with the new networkId
+          console.log('Network changed', networkId)
         }
       );
 

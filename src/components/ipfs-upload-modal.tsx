@@ -65,7 +65,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
     }
   };
 
-  const dismissClicked = (e) => {
+  const dismissClicked = () => {
     console.log(config);
     $attrs().onDismiss();
   };
@@ -97,7 +97,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
           <div class="mt-1">
             <input
               type="text"
-              onchange={(e) => (config.name = e.target.value)}
+              onchange={(e: any) => (config.name = e.target.value)}
               name="name"
               id="name"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full"
@@ -116,7 +116,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
           <div class="mt-1">
             <input
               type="text"
-              onchange={(e) => (config.description = e.target.value)}
+              onchange={(e: any) => (config.description = e.target.value)}
               name="description"
               id="description"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full"
@@ -135,7 +135,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
           <div class="mt-1">
             <input
               type="text"
-              onchange={(e) => (config.external_url = e.target.value)}
+              onchange={(e: any) => (config.external_url = e.target.value)}
               name="external url"
               id="external_url"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full"
@@ -154,7 +154,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
           <div class="mt-1">
             <input
               type="text"
-              onchange={(e) => (config.image_url = e.target.value)}
+              onchange={(e: any) => (config.image_url = e.target.value)}
               name="image url"
               id="image_url"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full"
