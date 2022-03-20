@@ -1,26 +1,26 @@
-import XMLParser from './xml-json-parser';
+import XMLParser from "./xml-json-parser";
 
 const Method = Object.freeze({
-  GET: 'GET',
-  POST: 'POST',
-  PUT: 'PUT',
-  PATCH: 'PATCH',
-  DELETE: 'DELETE',
-  HEAD: 'HEAD',
+  GET: "GET",
+  POST: "POST",
+  PUT: "PUT",
+  PATCH: "PATCH",
+  DELETE: "DELETE",
+  HEAD: "HEAD",
   _: {
     successCodes: {
       GET: 200,
       POST: 200,
       PUT: 200,
       PATCH: 200,
-      DELETE: 200
+      DELETE: 200,
     },
     createSuccess: {
       POST: 201,
       PUT: 201,
-      PATCH: 201
-    }
-  }
+      PATCH: 201,
+    },
+  },
 });
 
 const httpSession = (xhr, request, callbacks) => {
@@ -28,9 +28,11 @@ const httpSession = (xhr, request, callbacks) => {
     let { method, url, headers, body } = request;
 
     if (!(method in Method)) {
-      return reject(new Error('Invalid method supplied.'));
+      return reject(new Error("Invalid method supplied."));
     }
-    const successCode = !body ? Method._.successCodes[method] : Method._.createSuccess[method];
+    const successCode = !body
+      ? Method._.successCodes[method]
+      : Method._.createSuccess[method];
 
     xhr.onload = async () => {
       try {
@@ -60,7 +62,7 @@ const httpSession = (xhr, request, callbacks) => {
       return reject(xhr.statusText);
     };
 
-    xhr.onprogress = e => {
+    xhr.onprogress = (e) => {
       const cb = callbacks.onProgress;
 
       if (cb) {
@@ -69,18 +71,18 @@ const httpSession = (xhr, request, callbacks) => {
     };
 
     xhr.onabort = () => {
-      return reject(new Error('Request aborted'));
+      return reject(new Error("Request aborted"));
     };
 
-    xhr.onerror = e => {
+    xhr.onerror = (e) => {
       return reject(e);
     };
 
-    xhr.ontimeout = e => {
+    xhr.ontimeout = (e) => {
       return reject(e);
     };
 
-    xhr.upload.onprogress = e => {
+    xhr.upload.onprogress = (e) => {
       const cb = callbacks.onProgress;
 
       if (cb) {
@@ -88,7 +90,7 @@ const httpSession = (xhr, request, callbacks) => {
       }
     };
 
-    xhr.upload.onerror = e => {
+    xhr.upload.onerror = (e) => {
       return reject(e);
     };
 
@@ -102,14 +104,17 @@ const httpSession = (xhr, request, callbacks) => {
       }
     }
 
-    if (body && headers['Content-Type']) {
-      if (headers['Content-Type'] === 'application/x-www-form-urlencoded' && typeof body !== 'string') {
-        return reject(new Error('Invalid body format.'));
-      } else if (headers['Content-Type'].includes('application/json')) {
+    if (body && headers["Content-Type"]) {
+      if (
+        headers["Content-Type"] === "application/x-www-form-urlencoded" &&
+        typeof body !== "string"
+      ) {
+        return reject(new Error("Invalid body format."));
+      } else if (headers["Content-Type"].includes("application/json")) {
         if (body.constructor === Object || Array.isArray(body)) {
           body = JSON.stringify(body);
-        } else if (typeof body !== 'string') {
-          return reject(new Error('Invalid body format.'));
+        } else if (typeof body !== "string") {
+          return reject(new Error("Invalid body format."));
         }
       }
     }
@@ -123,9 +128,9 @@ const queryConstructor = (queries) => {
     return Object.keys(queries).reduce((a, k, i) => {
       a += i > 0 ? `&${k}=${queries[k]}` : `?${k}=${queries[k]}`;
       return a;
-    }, '');
+    }, "");
   }
-  return '';
+  return "";
 };
 
 class Http {
@@ -135,7 +140,7 @@ class Http {
    */
   constructor(options = {}) {
     this._ = {};
-    Object.keys(options).forEach(prop => this._[prop] = options[prop]);
+    Object.keys(options).forEach((prop) => (this._[prop] = options[prop]));
     this._callbacks = {};
   }
 
@@ -148,7 +153,7 @@ class Http {
    * @return {String} host string
    */
   get host() {
-    return !this._.host ? '' : this._.host;
+    return !this._.host ? "" : this._.host;
   }
 
   /**
@@ -216,7 +221,7 @@ class Http {
       method: Method.GET,
       url: url,
       headers: headers,
-      queries: queries
+      queries: queries,
     });
   }
 
@@ -234,7 +239,7 @@ class Http {
       url: url,
       headers: headers,
       body: body,
-      queries: queries
+      queries: queries,
     });
   }
 
@@ -252,7 +257,7 @@ class Http {
       url: url,
       headers: headers,
       body: body,
-      queries: queries
+      queries: queries,
     });
   }
 
@@ -270,7 +275,7 @@ class Http {
       url: url,
       headers: headers,
       body: body,
-      queries: queries
+      queries: queries,
     });
   }
 
@@ -286,7 +291,7 @@ class Http {
       method: Method.DELETE,
       url: url,
       headers: headers,
-      queries: queries
+      queries: queries,
     });
   }
 
@@ -332,7 +337,7 @@ class Http {
    * @return {[type]}      [description]
    */
   onRequest(cb) {
-    return this._applyCallback('onRequest', cb);
+    return this._applyCallback("onRequest", cb);
   }
 
   /**
@@ -341,7 +346,7 @@ class Http {
    * @return {Http}        Current Http Object
    */
   onError(cb) {
-    return this._applyCallback('onError', cb);
+    return this._applyCallback("onError", cb);
   }
 
   /**
@@ -350,7 +355,7 @@ class Http {
    * @return {Http}        Current Http Object
    */
   onSuccess(cb) {
-    return this._applyCallback('onSuccess', cb);
+    return this._applyCallback("onSuccess", cb);
   }
 
   /**
@@ -359,7 +364,7 @@ class Http {
    * @return {[type]}      [description]
    */
   onProgress(cb) {
-    return this._applyCallback('onProgress', cb);
+    return this._applyCallback("onProgress", cb);
   }
 
   /**
@@ -369,8 +374,8 @@ class Http {
    * @return {Http}        Current Http Object
    */
   _applyCallback(key, cb) {
-    if (typeof cb === 'function') {
-      this._callbacks[key] = e => cb(e);
+    if (typeof cb === "function") {
+      this._callbacks[key] = (e) => cb(e);
     }
 
     return this;

@@ -1,25 +1,21 @@
-import Http from './xhr';
-import {
-  NFTStorage,
-  File,
-  Blob
-} from 'nft.storage'
+import Http from "./xhr";
+import { NFTStorage, File, Blob } from "nft.storage";
 
 export type Attribute = {
-  trait_type: string
-  value: any
-}
+  trait_type: string;
+  value: any;
+};
 
 class IPFSStorageManager {
-  http: any
-  client: NFTStorage
+  http: any;
+  client: NFTStorage;
 
   constructor(apiKey: string) {
     if (apiKey) {
       this.client = new NFTStorage({ token: apiKey });
       this.http = new Http();
-      this.http.host = 'https://ipfs.io/ipfs/';
-    } else throw new Error('NFTStorage apiKey must be provided');
+      this.http.host = "https://ipfs.io/ipfs/";
+    } else throw new Error("NFTStorage apiKey must be provided");
   }
 
   upload(file: string) {
@@ -59,7 +55,7 @@ class IPFSStorageManager {
     description: string,
     attributes: Attribute[] = [],
     external_url: string,
-    file: string,
+    file: string
   ) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -68,10 +64,11 @@ class IPFSStorageManager {
           external_url,
           name,
           logic,
-          attributes
+          attributes,
         };
 
-        if (file) data.image = new File([ file ], `${name}.png`, { type: 'image/png' });
+        if (file)
+          data.image = new File([file], `${name}.png`, { type: "image/png" });
         const cid = await this.client.store(data);
 
         return resolve(cid);
@@ -87,7 +84,7 @@ class IPFSStorageManager {
         const { image } = await this.http.get(cid);
 
         if (image) {
-          await this.delete(image.split('/')[4]);
+          await this.delete(image.split("/")[4]);
           if (cb) cb(0.5);
         }
 

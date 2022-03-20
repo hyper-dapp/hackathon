@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 /**
  * Prompts
  */
@@ -23,6 +21,7 @@
 .cm-gutter {
   @apply bg-gray-100 dark:bg-gray-700;
 }
-.ͼ2 .cm-gutters { /* ??? */
+.ͼ2 .cm-gutters {
+  /* ??? */
   @apply dark:border-r-gray-600;
 }
