@@ -1,0 +1,6 @@
+[[redirects]]
+  from = "/flow/:cid"
+  to = "/flow/index.html"
+  status = 200
+  force = true
+  query = {cid = ":cid"} #  apply this rule for /old-path?path=example
