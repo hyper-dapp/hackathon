@@ -1,3 +1,4 @@
+// @ts-nocheck
 import XMLParser from "./xml-json-parser";
 
 const Method = Object.freeze({

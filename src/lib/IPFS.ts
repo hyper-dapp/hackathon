@@ -19,7 +19,7 @@ class IPFSStorageManager {
   }
 
   upload(file: string) {
-    return this.client.storeDirectory([file]);
+    return this.client.storeDirectory([file as any]);
   }
 
   storeDataBlob(metadata: BlobPart) {

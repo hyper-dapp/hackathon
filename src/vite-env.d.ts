@@ -7,3 +7,5 @@ interface Window {
 declare module "*.pl" {
   export const plainText: string;
 }
+
+declare module "@walletconnect/web3-provider/dist/umd/index.min.js";

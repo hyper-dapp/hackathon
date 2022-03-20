@@ -13,8 +13,6 @@ const App = cc(function () {
   const wallet = makeWalletConnector();
 
   return () => {
-    const state = wallet.state;
-
     return (
       <div class="flex-1 flex">
         {m(CortexEditor, {
