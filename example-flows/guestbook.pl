@@ -36,7 +36,7 @@ open_prompt :-
   show [
     row(
       col(
-        text('Owner address:'),
+        text('Enter owner address:'),
         input(address, owner)
       ),
 
@@ -68,21 +68,25 @@ view_prompt(GuestbookId) :-
 view_prompt(GuestbookId) :-
   get_lastest_entry(GuestbookId, [SignerAddr, GiftAmt, Message]),
   show [
-    text('Latest entry from ', SignerAddr),
-    text('"', Message, '"'),
+    text('Latest Entry:'),
+    row(
+      text(address(SignerAddr)),
+      text(eth(GiftAmt)),
+      text('"', Message, '"')
+    ),
     debug(latest_entry([SignerAddr, GiftAmt, Message]))
   ].
 
 view_prompt(GuestbookId) :-
   show [
-    text('New Entry'),
+    text('New Entry:'),
     row(
       text('ETH to Gift'),
       input(eth, entry_eth)
     ),
     row(
       text('Message'),
-      input(string, entry_message)
+      input(text, entry_message)
     ),
     button('Submit', {
       enabled: (get(input/entry_eth, _), get(input/entry_message, _))

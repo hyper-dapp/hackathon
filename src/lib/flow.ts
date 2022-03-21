@@ -24,13 +24,17 @@ export async function makeFlow(code: string) {
 
       // TODO: Handle more cases
       if (mutability.view && block.cache[cacheKey]) {
-        console.log("onCallFn (cache hit)", functionSig, contractAddress);
+        console.log("call_fn (cache hit)", functionSig, contractAddress);
         return block.cache[cacheKey];
       }
-      console.log("onCallFn", functionSig, args, block, contractAddress);
+      console.log("call_fn", functionSig, value, args, block, contractAddress);
 
       const returns = returnType.length
-        ? ` ${mutability.view ? "view " : ""}returns (${returnType.join(",")})`
+        ? ` ${mutability.view ? "view " : ""}returns ${
+              returnType[0].startsWith('tuple(')
+              ? returnType[0].replace(/^tuple/, '')
+              : `(${returnType.join(",")})`
+            }`
         : "";
 
       const iface = new ethers.utils.Interface([
@@ -47,13 +51,32 @@ export async function makeFlow(code: string) {
       const result = await contract
         .connect(env.signer)
         .functions[functionSig](...args, { value: value })
-        .then((result) =>
-          result.map(convertEthersContractCallResult)
+        .then(
+          (result) => {
+            console.log('[call_fn] Result:', result)
+            if (Array.isArray(result)) {
+              // View function call
+              return result?.map(convertEthersContractCallResult)
+            }
+            else if (result && result.wait) {
+              // Mutative function call
+              return result.wait().then(() => undefined)
+            }
+            else {
+              return result
+            }
+          },
+          (error) => {
+            console.log('[call_fn] Error:', error)
+            throw error
+          }
         );
 
-      console.log("Result", result);
+      console.log("[call_fn] Final result", result);
 
-      block.cache[cacheKey] = result;
+      if (result !== undefined) {
+        block.cache[cacheKey] = result;
+      }
 
       return result;
     },

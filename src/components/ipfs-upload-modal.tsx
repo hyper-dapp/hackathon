@@ -19,7 +19,6 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
   };
 
   const executePublish = async () => {
-    console.log(import.meta.env);
     const ipfs = new IPFSStorageManager(
       import.meta.env.VITE_NFT_STORAGE_API_KEY as string
     );
@@ -54,7 +53,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
         );
         cid = await ipfs.storeDataBlob(metaData);
 
-        console.log(cid);
+        console.log("Cid:", cid);
       } else {
         console.error("Name and Description are required");
       }
@@ -66,7 +65,6 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
   };
 
   const dismissClicked = () => {
-    console.log(config);
     $attrs().onDismiss();
   };
 
@@ -76,7 +74,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
         <div>
           <div class="mt-3 text-center sm:mt-5">
             <h3
-              class="text-lg leading-6 font-medium text-gray-900"
+              class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
               id="modal-title"
             >
               Publish Workflow
@@ -100,7 +98,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
               onchange={(e: any) => (config.name = e.target.value)}
               name="name"
               id="name"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full dark:bg-gray-700 dark:text-gray-100"
               placeholder="dApp Name"
             />
           </div>
@@ -119,7 +117,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
               onchange={(e: any) => (config.description = e.target.value)}
               name="description"
               id="description"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full dark:bg-gray-700 dark:text-gray-100"
               placeholder="dApp Description"
             />
           </div>
@@ -138,7 +136,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
               onchange={(e: any) => (config.external_url = e.target.value)}
               name="external url"
               id="external_url"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full dark:bg-gray-700 dark:text-gray-100"
               placeholder="External URL"
             />
           </div>
@@ -157,7 +155,7 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
               onchange={(e: any) => (config.image_url = e.target.value)}
               name="image url"
               id="image_url"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 px-4 rounded-full dark:bg-gray-700 dark:text-gray-100"
               placeholder="Image URL"
             />
           </div>
@@ -238,12 +236,12 @@ export const UploadModal = cc<Attrs>(function ($attrs) {
           >
             &#8203;
           </span>
-          <div class="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+          <div class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
             <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
               <button
                 onclick={dismissClicked}
                 type="button"
-                class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                class="bg-white dark:bg-gray-700 rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 <span class="sr-only">Close</span>
                 <svg

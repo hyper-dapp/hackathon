@@ -83,7 +83,7 @@ function renderPrompts(params: {
   isLatest: boolean;
   className: string;
   executeButtonAction(action: any[]): void;
-  onInputChange(): void;
+  onInputChange(acceptedValue: any): void;
 }): m.Child[] {
   const filtered = params.prompts.filter((p): p is Prompt => {
     const keep = typeof p !== "string";
@@ -130,7 +130,7 @@ function renderPrompts(params: {
     } else if (type === "text") {
       return (
         <div class={`prompt__text ${className}`}>
-          {unescapeString(args.join(""))}
+          {args.map(unescapeString).join("")}
         </div>
       );
     } else if (type === "button") {
@@ -149,34 +149,58 @@ function renderPrompts(params: {
           {unescapeString(buttonText)}
         </button>
       );
-    } else if (type === "input" && args[0] === "address") {
-      const [, name] = args;
-      0x376d38fd8c0b54abf937b2099969670f64918e1e;
+    } else if (type === "input" && VALID_INPUT_TYPES.includes(args[0] as string)) {
+      const [inputType, name] = args;
 
-      return (
-        <input
-          type="text"
-          disabled={!params.isLatest}
-          placeholder="0x..."
-          oninput={async (e: any) => {
-            const accepted = await params.flow.handleInput(
-              name,
-              e.target.value
-            );
-            if (accepted) {
-              params.onInputChange();
-            }
-          }}
-        />
-      );
+      const oninput = async (e: any) => {
+        const accepted = await params.flow.handleInput(
+          name,
+          e.target.value
+        );
+        if (accepted) {
+          params.onInputChange(accepted.value);
+        }
+      }
+
+      if (inputType === 'address') {
+        return (
+          <input
+            type="text"
+            disabled={!params.isLatest}
+            placeholder="0x..."
+            oninput={oninput}
+          />
+        );
+      } else if (inputType === 'eth') {
+        return (
+          <input
+            type="number"
+            step="any"
+            disabled={!params.isLatest}
+            placeholder="0.01"
+            oninput={oninput}
+          />
+        );
+      } else if (inputType === 'text') {
+        return (
+          <textarea
+            disabled={!params.isLatest}
+            placeholder="Enter text here"
+            oninput={oninput}
+          ></textarea>
+        );
+      }
+
     } else if (type === "debug") {
       console.log(`[prompt/debug]`, ...args);
       return null;
     } else {
-      console.warn(`[prompt/unrecognized-type]`, type, args);
-      return <div class={className}>Unrecognized type: {type}</div>;
+      console.warn(`[prompt/unrecognized-type]`, type, args)
+      return <div class={className}>
+        Unrecognized type: {type}{type === 'input' ? ` / ${args[0]}` : ''}
+      </div>;
     }
-  });
+  })
 }
 
 function makePromptHistory() {
@@ -215,7 +239,6 @@ function makePromptHistory() {
       let newPrompts = await flow.getPrompts();
 
       if (effectPrompts.length) {
-        console.log("PUSHING", effectPrompts);
         newPrompts = effectPrompts.concat(newPrompts);
       }
 
@@ -223,7 +246,9 @@ function makePromptHistory() {
       api.log();
       m.redraw();
     },
-    async handleInput() {
+    async handleInput(acceptedValue: any) {
+      // TODO: Write ui queue system to properly update browser input value
+      console.log("acceptedValue", acceptedValue)
       // Grab new prompts first so we can change array atomically
       const newPrompts = await flow.getPrompts();
       history.pop();
@@ -235,3 +260,5 @@ function makePromptHistory() {
 
   return api;
 }
+
+const VALID_INPUT_TYPES = ['address', 'eth', 'text']
