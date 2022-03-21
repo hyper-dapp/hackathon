@@ -1,26 +1,24 @@
-import "../global.css";
-
 import m from "mithril";
 import { cc } from "mithril-cc";
 import { Flow, makeFlow } from "../lib/flow";
 import { makeWalletConnector } from "../lib/wallet-connector";
 import { FlowUI } from "../components/flow-ui";
 
-const Flow = cc(function () {
+export const FlowPage = cc(function () {
   let flow: Flow | null;
-  let query = m.parseQueryString(window.location.search)
+  let cid = m.route.param('cid')
   let noSuchFlow = false
 
   const wallet = makeWalletConnector();
 
   this.oncreate(async () => {
-    if (!query.cid) {
+    if (!cid) {
       noSuchFlow = true;
       return;
     }
 
     try {
-      const req = await fetch(`https://ipfs.io/ipfs/${query.cid}`);
+      const req = await fetch(`https://ipfs.io/ipfs/${cid}`);
       if (req.status !== 200) {
         throw new Error('bad_request');
       }
@@ -55,8 +53,8 @@ const Flow = cc(function () {
           ]}
           {noSuchFlow &&
             <div class="dark:text-red-300">
-              {query.cid
-                ? `No such flow for given CID (${query.cid})`
+              {cid
+                ? `No such flow for given CID (${cid})`
                 : 'No given flow CID.'
               }
             </div>
@@ -67,5 +65,3 @@ const Flow = cc(function () {
     );
   };
 });
-
-m.mount(document.querySelector<HTMLDivElement>("#app")!, Flow);

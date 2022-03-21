@@ -1,39 +1,25 @@
 import "./global.css";
 
 import m from "mithril";
-import { cc } from "mithril-cc";
+import { EditorIde } from "./routes/editor-ide";
+import { FlowPage } from "./routes/flow-page";
 
-import { makeWalletConnector } from "./lib/wallet-connector";
-import { FlowUI } from "./components/flow-ui";
-import { CortexEditor } from "./components/cortex-editor";
-import { Flow, makeFlow } from "./lib/flow";
+const NotFound = {
+  view() {
+    return m('.w-screen.h-screen.flex.items-center.justify-center',
+      m('h1', 'Page not found')
+    )
+  }
+}
 
-const App = cc(function () {
-  let flow: Flow | null = null;
-  const wallet = makeWalletConnector();
+// Remove !# and treat full url as routes
+m.route.prefix = ''
 
-  return () => {
-    return (
-      <div class="flex-1 flex">
-        {m(CortexEditor, {
-          className: "w-[50%] overflow-x-auto",
-          async onUpdate(code) {
-            flow = await makeFlow(code);
-            m.redraw();
-          },
-        })}
-        {[
-          // In an array to enable key
-          m(FlowUI, {
-            key: flow?.id || -1,
-            flow,
-            wallet,
-            className: "w-[50%]",
-          }),
-        ]}
-      </div>
-    );
-  };
-});
+// TODO: Consider code splitting
+//       https://mithril.js.org/route.html#code-splitting
+m.route(document.querySelector<HTMLDivElement>("#app")!, '/404', {
+  '/': EditorIde,
+  '/flow/:cid': FlowPage,
 
-m.mount(document.querySelector<HTMLDivElement>("#app")!, App);
+  '/404': NotFound,
+})
