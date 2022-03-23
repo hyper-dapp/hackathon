@@ -11,7 +11,6 @@ contract CortexHub is ERC721URIStorage, Ownable {
   using Strings for address;
 
   mapping(address => uint) private _tokens;
-  mapping(bytes32 => address) private requestToMint;
   uint private _counter;
 
   modifier onlyOwnerOrAdmin(uint tokenId) {
