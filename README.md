@@ -15,10 +15,10 @@ Goals:
 
 ## Architecture
 Front-end behaviour is compiled through a cortex interpreter engine that generates and renders UI logic based on the rules defined in the code.
-![Cortext-interpret-engine](https://github.com/hyper-dapp/hackathon/blob/main/Cortex-Diagram.png)
+![Cortext-interpret-engine](https://github.com/hyper-dapp/hackathon/blob/master/Cortex-Diagram.png)
 
 A registry contract using ERC721 is used to track published workflows that can source workflow logic from IPFS CID references
-![Cortext-hub-registry](https://github.com/hyper-dapp/hackathon/blob/main/HyperDapp-Registry.png)
+![Cortext-hub-registry](https://github.com/hyper-dapp/hackathon/blob/master/HyperDapp-Registry.png)
 
 ## Front-end Development
 
