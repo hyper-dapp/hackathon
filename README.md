@@ -43,3 +43,7 @@ $ cp .env.example .env
 $ npm install
 $ npm run deploy:<network>
 ```
+
+## Deployed Registry Contracts
+Rinkeby: https://rinkeby.etherscan.io/address/0x656D3455E84FD6b685a408e824450f5cBfb4d98d#code
+Arbitrum Rinkeby: https://testnet.arbiscan.io/address/0x59fb1449C54942B64432f6a0C16116BDaBB161b7#code
