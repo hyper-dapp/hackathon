@@ -34,11 +34,11 @@ contract CortexHub is ERC721URIStorage, Ownable {
 
   function mintCortexArtifact(string memory _cid) private {
     _counter += 1;
-    _safeMint(account, _counter);
+    _safeMint(msg.sender, _counter);
     _setTokenURI(_counter, string(abi.encodePacked('https://ipfs.io/ipfs/', _cid)));
-    _tokens[account] = _counter;
+    _tokens[msg.sender] = _counter;
 
-    emit CortexMintSuccess(account, _counter);
+    emit CortexMintSuccess(msg.sender, _counter);
   }
 
   function withdraw(uint _amount) external onlyOwner {
