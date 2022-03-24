@@ -149,7 +149,7 @@ function renderPrompts(params: {
           {unescapeString(buttonText)}
         </button>
       );
-    } else if (type === "input" && VALID_INPUT_TYPES.includes(args[0] as string)) {
+    } else if (type === "input") {
       const [inputType, name] = args;
 
       const oninput = async (e: any) => {
@@ -190,6 +190,12 @@ function renderPrompts(params: {
           ></textarea>
         );
       }
+      else {
+        console.warn(`[prompt/input/unrecognized-type]`, type, inputType, args)
+        return <div class={className}>
+          Unrecognized input type: {type}({inputType}, ...)
+        </div>;
+      }
 
     } else if (type === "debug") {
       console.log(`[prompt/debug]`, ...args);
@@ -197,7 +203,7 @@ function renderPrompts(params: {
     } else {
       console.warn(`[prompt/unrecognized-type]`, type, args)
       return <div class={className}>
-        Unrecognized type: {type}{type === 'input' ? ` / ${args[0]}` : ''}
+        Unrecognized type: {type}
       </div>;
     }
   })
@@ -260,5 +266,3 @@ function makePromptHistory() {
 
   return api;
 }
-
-const VALID_INPUT_TYPES = ['address', 'eth', 'text']
