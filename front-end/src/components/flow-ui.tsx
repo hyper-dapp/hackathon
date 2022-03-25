@@ -8,6 +8,7 @@ import { WalletButton } from "./wallet-button";
 import { btnClass } from "../lib/component-classes";
 import { Prompt, PromptArg } from "../lib/prompt-types";
 import { renderLog, LogType } from "./ui/log";
+import { Loader } from "./loader";
 
 type ButtonAttrs = {
   enabled?: boolean;
@@ -32,7 +33,7 @@ export const FlowUI = cc<Attrs>(function ($attrs) {
 
       if (flow && state.type === "ready") {
         // TODO: Use current block number
-        await flow.init(state.address, 10, {
+        await flow.init(state.address.toLowerCase(), 10, {
           signer: state.signer,
           provider: state.provider,
         });
@@ -59,19 +60,27 @@ export const FlowUI = cc<Attrs>(function ($attrs) {
     }
 
     return (
-      <div class={`${className} p-4 bg-gray-100 dark:bg-gray-700 divide-y`}>
-        {promptHistory.all().map((prompts, i) => (
-          <div class="py-6 space-y-4 flex flex-col items-center dark:border-gray-600">
-            {renderPrompts({
-              flow,
-              prompts,
-              isLatest: i === promptHistory.length - 1,
-              className: "",
-              executeButtonAction: promptHistory.execute,
-              onInputChange: promptHistory.handleInput,
-            })}
+      <div class={`${className} bg-gray-100 dark:bg-gray-700`}>
+        <div class="p-4 divide-y">
+          {promptHistory.all().map((prompts, i) => (
+            <div class="py-6 space-y-4 flex flex-col items-center dark:border-gray-600">
+              {renderPrompts({
+                flow,
+                prompts,
+                onInput: promptHistory.handleInput,
+                running: promptHistory.running,
+                isLatest: i === promptHistory.length - 1,
+                className: "",
+                executeButtonAction: promptHistory.execute,
+              })}
+            </div>
+          ))}
+        </div>
+        {promptHistory.running &&
+          <div class="flex items-center justify-center">
+            {m(Loader)}
           </div>
-        ))}
+        }
       </div>
     );
   };
@@ -80,10 +89,11 @@ export const FlowUI = cc<Attrs>(function ($attrs) {
 function renderPrompts(params: {
   flow: Flow;
   prompts: PromptArg[];
+  running: boolean;
   isLatest: boolean;
   className: string;
   executeButtonAction(action: any[]): void;
-  onInputChange(acceptedValue: any): void;
+  onInput(name: any, acceptedValue: any): void;
 }): m.Child[] {
   const filtered = params.prompts.filter((p): p is Prompt => {
     const keep = typeof p !== "string";
@@ -144,7 +154,7 @@ function renderPrompts(params: {
         <button
           class={`${btnClass()} ${className}`}
           onclick={() => params.executeButtonAction(callback as any)}
-          disabled={!params.isLatest || attrs.enabled === false}
+          disabled={!params.isLatest || params.running || attrs.enabled === false}
         >
           {unescapeString(buttonText)}
         </button>
@@ -152,21 +162,16 @@ function renderPrompts(params: {
     } else if (type === "input") {
       const [inputType, name] = args;
 
-      const oninput = async (e: any) => {
-        const accepted = await params.flow.handleInput(
-          name,
-          e.target.value
-        );
-        if (accepted) {
-          params.onInputChange(accepted.value);
-        }
+      const oninput = (e: any) => {
+        params.onInput(name, e.target.value);
       }
+      const disabled = !params.isLatest || params.running
 
       if (inputType === 'address') {
         return (
           <input
             type="text"
-            disabled={!params.isLatest}
+            disabled={disabled}
             placeholder="0x..."
             oninput={oninput}
           />
@@ -176,15 +181,27 @@ function renderPrompts(params: {
           <input
             type="number"
             step="any"
-            disabled={!params.isLatest}
+            disabled={disabled}
             placeholder="0.01"
+            oninput={oninput}
+          />
+        );
+
+      // TODO: Support more bytes/int/uint types
+      } else if (inputType === 'bytes32') {
+        return (
+          <input
+            type="text"
+            pattern="[0-9a-fA-F]"
+            disabled={disabled}
+            placeholder="Enter bytes32 here"
             oninput={oninput}
           />
         );
       } else if (inputType === 'text') {
         return (
           <textarea
-            disabled={!params.isLatest}
+            disabled={disabled}
             placeholder="Enter text here"
             oninput={oninput}
           ></textarea>
@@ -212,6 +229,7 @@ function renderPrompts(params: {
 function makePromptHistory() {
   let flow: Flow;
   let history: Prompt[][] = [];
+  let running = true;
 
   const api = {
     all() {
@@ -220,6 +238,9 @@ function makePromptHistory() {
     get length() {
       return history.length;
     },
+    get running() {
+      return running;
+    },
     log() {
       console.log("prompts>", history[history.length - 1]);
     },
@@ -227,19 +248,31 @@ function makePromptHistory() {
       flow = _flow;
       history.push(await flow.getPrompts());
       api.log();
+      running = false
     },
     async execute(action: Prompt[]) {
       console.log("execute>", action);
-      const { effects } = await flow.execute(action);
-      console.log("effects>", effects);
+      running = true;
+      m.redraw();
 
       let effectPrompts: Prompt[] = [];
-      for (let [effectType, ...effectArgs] of effects) {
-        if (effectType === "log") {
-          effectPrompts.push([effectType, ...effectArgs]);
-        } else {
-          console.log(`[effect/unrecognized-type]`, effectType, effectArgs);
+      try {
+        const { effects } = await flow.execute(action);
+        console.log("effects>", effects);
+
+        for (let [effectType, ...effectArgs] of effects) {
+          if (effectType === "log") {
+            effectPrompts.push([effectType, ...effectArgs]);
+          } else {
+            console.log(`[effect/unrecognized-type]`, effectType, effectArgs);
+          }
         }
+      }
+      catch(executeError) {
+        console.log('execute error>', executeError);
+        running = false;
+        m.redraw();
+        return;
       }
 
       let newPrompts = await flow.getPrompts();
@@ -250,11 +283,18 @@ function makePromptHistory() {
 
       history.push(newPrompts);
       api.log();
+      running = false;
       m.redraw();
     },
-    async handleInput(acceptedValue: any) {
+
+    // TODO: Debounce
+    async handleInput(name: any, inputValue: any) {
+      const accepted = await flow.handleInput(name, inputValue);
+      if (!accepted) return
+
       // TODO: Write ui queue system to properly update browser input value
-      console.log("acceptedValue", acceptedValue)
+      console.log("acceptedValue", accepted.value)
+
       // Grab new prompts first so we can change array atomically
       const newPrompts = await flow.getPrompts();
       history.pop();

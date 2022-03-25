@@ -4,7 +4,7 @@ import { Editor, makeCodeEditor } from "../lib/code-editor";
 import { UploadModal } from "./ipfs-upload-modal";
 import "./cortex-editor.css";
 
-import { plainText as GUESTBOOK_EXAMPLE } from "../../example-flows/guestbook.pl";
+import { plainText as CORTEX_EXAMPLE } from "../../example-flows/token-vesting.pl";
 import { btnClass } from "../lib/component-classes";
 
 type Attrs = {
@@ -18,7 +18,7 @@ export const CortexEditor = cc<Attrs>(function ($attrs) {
 
   this.oncreate(({ dom }) => {
     editor = makeCodeEditor(dom.querySelector(".code-editor-container")!);
-    editor.setText(GUESTBOOK_EXAMPLE);
+    editor.setText(CORTEX_EXAMPLE);
     $attrs().onUpdate(editor.getText());
   });
 

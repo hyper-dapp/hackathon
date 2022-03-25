@@ -20,17 +20,10 @@ type Status =
 export function makeWalletConnector() {
   let adapter = null as null | Adapter;
 
-  // Optimistically init with Metamask
-  // TODO: Be smarter about this
-  makeMetamask({ updateStatus }).then((_adapter) => {
-    adapter = _adapter;
-    handle.type = adapter.type;
-  });
-
   const handle = {
     type: null as null | Adapter["type"],
     // Abstraction over both methods
-    state: { type: "loading" } as Status,
+    state: { type: "init" } as Status,
 
     // Populated by either method
     provider: null as any,
@@ -39,7 +32,7 @@ export function makeWalletConnector() {
       if (adapter) {
         adapter.disconnect();
       }
-      adapter = makeWalletConnect({ updateStatus });
+      adapter = await makeWalletConnect({ updateStatus });
       await adapter.connect();
       handle.provider = adapter.provider;
     },
@@ -88,16 +81,22 @@ type AdapterParams = {
  *   https://docs.walletconnect.com/tech-spec
  *
  */
-function makeWalletConnect({ updateStatus }: AdapterParams): Adapter {
-  const provider: WalletConnectProvider = new WalletConnectProviderUmd({
+async function makeWalletConnect({ updateStatus }: AdapterParams) {
+  const walletConnectProvider: WalletConnectProvider = new WalletConnectProviderUmd({
     infuraId: import.meta.env.VITE_INFURA_ID as string,
   });
 
   const wallet: Adapter = {
     type: "WalletConnect",
-    provider: new ethers.providers.Web3Provider(provider),
+    provider: new ethers.providers.Web3Provider(walletConnectProvider),
     async connect() {
-      await provider.enable();
+      await walletConnectProvider.enable();
+      updateStatus({
+        type: "ready",
+        provider: wallet.provider,
+        signer: wallet.provider.getSigner(),
+        address: walletConnectProvider.accounts[0],
+      });
     },
     disconnect() {
       // wallet.provider.off('accountsChanged')
@@ -106,17 +105,17 @@ function makeWalletConnect({ updateStatus }: AdapterParams): Adapter {
     },
   };
 
-  provider.on("accountsChanged", (accounts: string[]) => {
+  updateStatus({ type: "init" });
+
+  walletConnectProvider.on("accountsChanged", (accounts: string[]) => {
     console.log("accountsChanged", accounts);
-    // TODO
   });
 
-  provider.on("chainChanged", (chainId: number) => {
+  walletConnectProvider.on("chainChanged", (chainId: number) => {
     console.log("chainChanged", chainId);
-    // TODO
   });
 
-  provider.on("disconnect", (code: number, reason: string) => {
+  walletConnectProvider.on("disconnect", (code: number, reason: string) => {
     console.log("disconnect", code, reason);
     updateStatus({ type: "init" });
   });

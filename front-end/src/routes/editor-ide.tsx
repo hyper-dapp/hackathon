@@ -12,7 +12,7 @@ export const EditorIde = cc(function () {
 
   return () => {
     return (
-      <div class="flex-1 flex">
+      <div class="flex-1 flex w-screen">
         {m(CortexEditor, {
           className: "w-[50%] overflow-x-auto",
           async onUpdate(code) {
@@ -26,7 +26,7 @@ export const EditorIde = cc(function () {
             key: flow?.id || -1,
             flow,
             wallet,
-            className: "w-[50%]",
+            className: "w-[50%] break-all",
           }),
         ]}
       </div>
