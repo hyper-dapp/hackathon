@@ -60,8 +60,8 @@ export const FlowUI = cc<Attrs>(function ($attrs) {
     }
 
     return (
-      <div class={`${className} bg-gray-100 dark:bg-gray-700`}>
-        <div class="p-4 divide-y">
+      <div class={`${className} py-4 bg-gray-100 dark:bg-gray-700`}>
+        <div class="px-4 divide-y">
           {promptHistory.all().map((prompts, i) => (
             <div class="py-6 space-y-4 flex flex-col items-center dark:border-gray-600">
               {renderPrompts({
@@ -77,7 +77,7 @@ export const FlowUI = cc<Attrs>(function ($attrs) {
           ))}
         </div>
         {promptHistory.running &&
-          <div class="flex items-center justify-center">
+          <div class="px-4 flex items-center justify-center">
             {m(Loader)}
           </div>
         }

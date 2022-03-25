@@ -44,7 +44,7 @@ export const FlowPage = cc(function () {
       <div class="container mx-auto p-10 h-screen">
         <div class="flex flex-col items-center">
           {name &&
-            <h1 class="mb-2 text-xl font-medium">{name}</h1>
+            <h1 class="mb-4 text-xl font-medium">{name}</h1>
           }
           {[
             // In an array to enable key
