@@ -7,6 +7,7 @@ import { FlowUI } from "../components/flow-ui";
 export const FlowPage = cc(function () {
   let flow: Flow | null;
   let cid = m.route.param('cid')
+  let name = ''
   let noSuchFlow = false
 
   const wallet = makeWalletConnector();
@@ -28,6 +29,7 @@ export const FlowPage = cc(function () {
         throw new Error('bad_request');
       }
 
+      name = json.name;
       flow = await makeFlow(json.logic);
     }
     catch(err) {
@@ -41,6 +43,9 @@ export const FlowPage = cc(function () {
     return (
       <div class="container mx-auto p-10 h-screen">
         <div class="flex flex-col items-center">
+          {name &&
+            <h1 class="mb-2 text-xl font-medium">{name}</h1>
+          }
           {[
             // In an array to enable key
             !noSuchFlow &&
